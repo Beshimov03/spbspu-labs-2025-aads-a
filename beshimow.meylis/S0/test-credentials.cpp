@@ -1,7 +1,6 @@
 #include "credentials.hpp"
 
-int main()
+void testPrintCredentials()
 {
   beshimow::printCredentials();
-  return 0;
 }
