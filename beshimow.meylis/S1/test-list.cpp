@@ -2,8 +2,12 @@
 
 void testListPush()
 {
-  beshimow::List<int> l;
+  beshimow::List<unsigned long long> l;
   l.pushBack(1);
   l.pushBack(2);
   l.pushFront(0);
+
+  auto it = l.begin();
+  ++it;
+  --it;
 }

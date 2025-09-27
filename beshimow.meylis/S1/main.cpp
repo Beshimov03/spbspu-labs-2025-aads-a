@@ -7,7 +7,7 @@
 
 namespace beshimow
 {
-  using IntList = List<int>;
+  using IntList = List<unsigned long long>;
 
   int run()
   {
@@ -28,10 +28,24 @@ namespace beshimow
 
       IntList& list = data[name];
 
-      int value;
-      while (iss >> value)
+      std::string num;
+      while (iss >> num)
       {
-        list.pushBack(value);
+        try
+        {
+          size_t pos = 0;
+          unsigned long long value = std::stoull(num, &pos);
+          if (pos != num.size())
+          {
+            throw std::invalid_argument("bad number");
+          }
+          list.pushBack(value);
+        }
+        catch (...)
+        {
+          std::cerr << "overflow" << std::endl;
+          return 1;
+        }
       }
     }
 
@@ -48,13 +62,13 @@ namespace beshimow
     }
     std::cout << std::endl;
 
-    std::vector<std::vector<int>> levels;
+    std::vector<std::vector<unsigned long long>> levels;
     std::size_t idx = 0;
 
     while (true)
     {
       bool hasAtLevel = false;
-      std::vector<int> row;
+      std::vector<unsigned long long> row;
       for (const auto& n : order)
       {
         const IntList& lst = data.at(n);
@@ -86,14 +100,14 @@ namespace beshimow
 
     if (levels.empty())
     {
-      std::cerr << "Cannot calculate sums" << std::endl;
-      return 1;
+      std::cout << 0 << std::endl;
+      return 0;
     }
 
     for (std::size_t j = 0; j < levels.size(); ++j)
     {
-      long long sum = 0;
-      for (int v : levels[j]) sum += v;
+      unsigned long long sum = 0;
+      for (auto v : levels[j]) sum += v;
       if (j) std::cout << ' ';
       std::cout << sum;
     }
