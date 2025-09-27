@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <climits>
 #include "list.hpp"
 
 namespace beshimow
@@ -39,6 +40,13 @@ namespace beshimow
           {
             throw std::invalid_argument("bad number");
           }
+
+          if (value > static_cast<unsigned long long>(LLONG_MAX))
+          {
+            std::cerr << "overflow" << std::endl;
+            return 1;
+          }
+
           list.pushBack(value);
         }
         catch (...)
