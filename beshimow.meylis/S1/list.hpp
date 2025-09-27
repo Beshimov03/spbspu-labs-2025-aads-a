@@ -15,7 +15,8 @@ namespace beshimow
     {
       T value;
       Node* next;
-      Node(const T& v, Node* n) : value(v), next(n) {}
+      Node* prev;
+      Node(const T& v, Node* p, Node* n) : value(v), next(n), prev(p) {}
     };
 
     Node* head_;
@@ -26,7 +27,7 @@ namespace beshimow
     class Iterator
     {
     public:
-      using iterator_category = std::forward_iterator_tag;
+      using iterator_category = std::bidirectional_iterator_tag;
       using value_type = T;
       using difference_type = std::ptrdiff_t;
       using pointer = T*;
@@ -50,11 +51,25 @@ namespace beshimow
         return tmp;
       }
 
+      Iterator& operator--()
+      {
+        node_ = node_->prev;
+        return *this;
+      }
+
+      Iterator operator--(int)
+      {
+        Iterator tmp = *this;
+        node_ = node_->prev;
+        return tmp;
+      }
+
       bool operator==(const Iterator& other) const { return node_ == other.node_; }
       bool operator!=(const Iterator& other) const { return node_ != other.node_; }
 
     private:
       Node* node_;
+      friend class List<T>;
     };
 
     List() : head_(nullptr), tail_(nullptr), size_(0) {}
@@ -106,7 +121,7 @@ namespace beshimow
 
     void pushBack(const T& value)
     {
-      Node* node = new Node(value, nullptr);
+      Node* node = new Node(value, tail_, nullptr);
       if (!head_)
       {
         head_ = tail_ = node;
@@ -119,11 +134,29 @@ namespace beshimow
       ++size_;
     }
 
+    void pushFront(const T& value)
+    {
+      Node* node = new Node(value, nullptr, head_);
+      if (!head_)
+      {
+        head_ = tail_ = node;
+      }
+      else
+      {
+        head_->prev = node;
+        head_ = node;
+      }
+      ++size_;
+    }
+
     bool empty() const { return size_ == 0; }
     std::size_t size() const { return size_; }
 
     Iterator begin() const { return Iterator(head_); }
     Iterator end() const { return Iterator(nullptr); }
+
+    Iterator rbegin() const { return Iterator(tail_); }
+    Iterator rend() const { return Iterator(nullptr); }
   };
 }
 
